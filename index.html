@@ -1,745 +1,539 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Masterclass Gratuita – Luis León</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --surface2: #181818;
-    --accent: #f5a623;
-    --accent2: #ff6b35;
-    --text: #f0ede8;
-    --text-muted: #888;
-    --border: rgba(245,166,35,0.15);
-    --glow: rgba(245,166,35,0.08);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  /* ── GRAIN OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.5;
-  }
-
-  /* ── HERO ── */
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 80px 24px 60px;
-    overflow: hidden;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    top: -200px;
-    right: -200px;
-    width: 700px;
-    height: 700px;
-    background: radial-gradient(circle, rgba(245,166,35,0.07) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(245,166,35,0.1);
-    border: 1px solid rgba(245,166,35,0.3);
-    border-radius: 100px;
-    padding: 6px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 28px;
-    width: fit-content;
-    animation: fadeUp 0.6s ease both;
-  }
-
-  .badge::before {
-    content: '';
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(52px, 10vw, 96px);
-    line-height: 0.95;
-    letter-spacing: 0.02em;
-    margin-bottom: 8px;
-    animation: fadeUp 0.6s 0.1s ease both;
-  }
-
-  h1 .line-orange { color: var(--accent); display: block; }
-  h1 .line-white { color: var(--text); display: block; }
-
-  .hero-sub {
-    font-size: clamp(17px, 2.5vw, 22px);
-    font-weight: 500;
-    color: var(--text-muted);
-    margin: 20px 0 36px;
-    max-width: 560px;
-    animation: fadeUp 0.6s 0.2s ease both;
-  }
-
-  .hero-sub strong { color: var(--text); font-weight: 700; }
-
-  /* ── PROOF STRIP ── */
-  .proof-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 44px;
-    animation: fadeUp 0.6s 0.3s ease both;
-  }
-
-  .proof-chip {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  .proof-chip .icon { font-size: 16px; }
-
-  /* ── FORM BLOCK ── */
-  .form-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 36px 28px;
-    max-width: 480px;
-    position: relative;
-    overflow: hidden;
-    animation: fadeUp 0.6s 0.4s ease both;
-  }
-
-  .form-block::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-  }
-
-  .form-block h2 {
-    font-size: 22px;
-    font-weight: 800;
-    margin-bottom: 6px;
-  }
-
-  .form-block p {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-bottom: 24px;
-  }
-
-  .form-block p strong { color: var(--accent); }
-
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  input[type="text"], input[type="email"], select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: var(--text);
-    font-family: inherit;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  input::placeholder { color: var(--text-muted); }
-
-  select option { background: var(--surface2); color: var(--text); }
-
-  input:focus, select:focus {
-    border-color: rgba(245,166,35,0.5);
-    box-shadow: 0 0 0 3px rgba(245,166,35,0.08);
-  }
-
-  .cta-btn {
-    width: 100%;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: #0a0a0a;
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    border: none;
-    border-radius: 12px;
-    padding: 18px 24px;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-    text-transform: uppercase;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(245,166,35,0.35);
-  }
-
-  .cta-btn:active { transform: translateY(0); }
-
-  .cta-btn::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-  }
-
-  .form-disclaimer {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-align: center;
-    margin-top: 12px;
-  }
-
-  /* ── SECTION ── */
-  section {
-    padding: 80px 24px;
-    max-width: 680px;
-    margin: 0 auto;
-  }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
-
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(36px, 6vw, 56px);
-    line-height: 1;
-    margin-bottom: 16px;
-    letter-spacing: 0.02em;
-  }
-
-  .section-body {
-    font-size: 16px;
-    color: var(--text-muted);
-    line-height: 1.7;
-  }
-
-  /* ── PAIN POINTS ── */
-  .pain-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 32px;
-  }
-
-  .pain-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    background: var(--surface);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 12px;
-    padding: 16px 18px;
-    font-size: 15px;
-    font-weight: 500;
-    opacity: 0;
-    transform: translateX(-20px);
-    transition: opacity 0.5s, transform 0.5s;
-  }
-
-  .pain-list li.visible { opacity: 1; transform: translateX(0); }
-
-  .pain-list li .x {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    background: rgba(255,80,80,0.15);
-    color: #ff5050;
-    font-size: 13px;
-    font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  /* ── WHO IS LUIS ── */
-  .bio-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 36px 28px;
-    margin-top: 36px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .bio-top {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .avatar {
-    width: 72px; height: 72px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    color: #0a0a0a;
-    flex-shrink: 0;
-    border: 3px solid rgba(245,166,35,0.3);
-  }
-
-  .bio-name { font-size: 22px; font-weight: 800; }
-  .bio-title { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-
-  .companies {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .company-badge {
-    background: var(--surface2);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-  }
-
-  .bio-text {
-    font-size: 15px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    padding-top: 20px;
-  }
-
-  /* ── WHAT YOU LEARN ── */
-  .learn-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 32px;
-  }
-
-  .learn-item {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    padding: 20px;
-    background: var(--surface);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 14px;
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.5s, transform 0.5s;
-  }
-
-  .learn-item.visible { opacity: 1; transform: translateY(0); }
-
-  .learn-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    color: var(--accent);
-    line-height: 1;
-    flex-shrink: 0;
-    width: 36px;
-  }
-
-  .learn-item h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-  .learn-item p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
-
-  /* ── DETAILS STRIP ── */
-  .details-strip {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 32px;
-  }
-
-  .detail-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    text-align: center;
-  }
-
-  .detail-card .icon { font-size: 28px; margin-bottom: 8px; }
-  .detail-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 4px; }
-  .detail-card .value { font-size: 18px; font-weight: 800; color: var(--accent); }
-
-  /* ── FINAL CTA ── */
-  .final-cta {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 48px 28px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    margin: 0 24px 80px;
-    max-width: 680px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .final-cta::before {
-    content: '';
-    position: absolute;
-    bottom: -100px; right: -100px;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(245,166,35,0.06), transparent 70%);
-    pointer-events: none;
-  }
-
-  .final-cta .section-title { margin-bottom: 12px; }
-  .final-cta .section-body { margin-bottom: 32px; }
-
-  .final-cta .cta-btn {
-    max-width: 360px;
-    margin: 0 auto;
-    display: block;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    text-align: center;
-    padding: 32px 24px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.2);
-    border-top: 1px solid rgba(255,255,255,0.05);
-  }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── DIVIDER ── */
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(245,166,35,0.2), transparent);
-    margin: 0 24px;
-  }
-
-  /* ── COUNTER ── */
-  .counter-bar {
-    background: rgba(245,166,35,0.05);
-    border-top: 1px solid rgba(245,166,35,0.1);
-    border-bottom: 1px solid rgba(245,166,35,0.1);
-    padding: 14px 24px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--accent);
-    letter-spacing: 0.03em;
-  }
-
-  .counter-bar span { color: var(--text); font-weight: 800; }
-
-  /* ── MOBILE TWEAKS ── */
-  @media (max-width: 480px) {
-    .details-strip { grid-template-columns: 1fr 1fr; }
-    .proof-strip { gap: 8px; }
-    .form-block { padding: 28px 20px; }
-  }
+#ll-wrap *, #ll-wrap *::before, #ll-wrap *::after { box-sizing: border-box; margin: 0; padding: 0; }
+#ll-wrap {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #181818;
+  --accent: #f5a623;
+  --accent2: #ff6b35;
+  --text: #f0ede8;
+  --text-muted: #888;
+  --border: rgba(245,166,35,0.15);
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  width: 100%;
+}
+.ll-counter-bar {
+  background: rgba(245,166,35,0.05);
+  border-top: 1px solid rgba(245,166,35,0.1);
+  border-bottom: 1px solid rgba(245,166,35,0.1);
+  padding: 14px 24px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.03em;
+}
+.ll-counter-bar span { color: var(--text); font-weight: 800; }
+.ll-hero {
+  position: relative;
+  padding: 70px 48px 60px;
+  overflow: hidden;
+  max-width: 860px;
+  margin: 0 auto;
+  width: 100%;
+}
+.ll-hero::after {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(245,166,35,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.ll-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245,166,35,0.1);
+  border: 1px solid rgba(245,166,35,0.3);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 28px;
+}
+.ll-badge-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: ll-pulse 2s infinite;
+}
+@keyframes ll-pulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.5;transform:scale(0.8)}
+}
+.ll-h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 10vw, 88px);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+.ll-h1 .ll-orange { color: var(--accent); display: block; }
+.ll-h1 .ll-white { color: var(--text); display: block; }
+.ll-hero-sub {
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 20px 0 32px;
+  max-width: 540px;
+}
+.ll-hero-sub strong { color: var(--text); font-weight: 700; }
+.ll-proof-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+.ll-proof-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.ll-form-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 28px;
+  max-width: 560px;
+  position: relative;
+  overflow: hidden;
+}
+.ll-form-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+.ll-form-block h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.ll-form-block .ll-form-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+.ll-form-block .ll-form-desc strong { color: var(--accent); }
+.ll-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.ll-input-group input,
+.ll-input-group select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  outline: none;
+}
+.ll-input-group input::placeholder { color: var(--text-muted); }
+.ll-input-group select option { background: #181818; color: #f0ede8; }
+.ll-cta-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: #0a0a0a;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: none;
+  border-radius: 12px;
+  padding: 18px 24px;
+  cursor: pointer;
+  text-transform: uppercase;
+  width: 100%;
+}
+.ll-cta-btn:hover { opacity: 0.92; }
+.ll-form-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 12px;
+}
+.ll-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245,166,35,0.2), transparent);
+  margin: 0 48px;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.ll-section {
+  padding: 70px 48px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.ll-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.ll-stitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(34px, 6vw, 52px);
+  line-height: 1;
+  margin-bottom: 16px;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+.ll-sbody {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.ll-pain-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+}
+.ll-pain-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+.ll-x {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(255,80,80,0.15);
+  color: #ff5050;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ll-bio-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  margin-top: 32px;
+}
+.ll-bio-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+.ll-avatar {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: #0a0a0a;
+  flex-shrink: 0;
+  border: 3px solid rgba(245,166,35,0.3);
+}
+.ll-bio-name { font-size: 21px; font-weight: 800; color: var(--text); }
+.ll-bio-role { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.ll-companies {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;
+}
+.ll-co-badge {
+  background: var(--surface2);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.ll-bio-text {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 18px;
+}
+.ll-learn-grid {
+  display: flex; flex-direction: column; gap: 12px; margin-top: 28px;
+}
+.ll-learn-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 14px;
+}
+.ll-learn-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: var(--accent);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 36px;
+}
+.ll-learn-item h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+.ll-learn-item p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+.ll-details-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px;
+}
+.ll-detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+}
+.ll-detail-card .ll-dicon { font-size: 26px; margin-bottom: 8px; }
+.ll-detail-card .ll-dlabel { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 4px; }
+.ll-detail-card .ll-dvalue { font-size: 16px; font-weight: 800; color: var(--accent); }
+.ll-final-cta {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 48px 48px;
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto 72px;
+  position: relative;
+  overflow: hidden;
+}
+.ll-final-cta::before {
+  content: '';
+  position: absolute;
+  bottom: -100px; right: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(245,166,35,0.05), transparent 70%);
+  pointer-events: none;
+}
+.ll-final-cta .ll-cta-btn { max-width: 360px; margin: 0 auto; display: block; }
+.ll-footer {
+  text-align: center;
+  padding: 28px 24px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.2);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+@media(max-width:480px){
+  .ll-details-grid{grid-template-columns:1fr 1fr;}
+  .ll-form-block{padding:24px 18px;}
+}
 </style>
-</head>
-<body>
 
-<!-- COUNTER BAR -->
-<div class="counter-bar">
-  🔥 <span id="counter">47</span> personas ya se inscribieron a la próxima masterclass
-</div>
+<div id="ll-wrap">
 
-<!-- HERO -->
-<div class="hero">
-  <div class="badge">Masterclass 100% gratuita</div>
-
-  <h1>
-    <span class="line-orange">Automatiza</span>
-    <span class="line-white">tus reportes.</span>
-    <span class="line-white">Para siempre.</span>
-  </h1>
-
-  <p class="hero-sub">
-    Aprende a actualizar cualquier reporte con <strong>1 solo clic</strong> usando Power Query — aunque nunca lo hayas usado antes.
-  </p>
-
-  <div class="proof-strip">
-    <div class="proof-chip"><span class="icon">🏢</span> Ex-analista en Repsol</div>
-    <div class="proof-chip"><span class="icon">🏢</span> Nestlé</div>
-    <div class="proof-chip"><span class="icon">🏢</span> Solgas</div>
-    <div class="proof-chip"><span class="icon">📅</span> 10 años de experiencia</div>
+  <!-- COUNTER -->
+  <div class="ll-counter-bar">
+    🔥 <span id="ll-counter">47</span> personas ya se inscribieron a la próxima masterclass
   </div>
 
-  <!-- FORM -->
-  <div class="form-block">
-    <h2>Reserva tu lugar gratis</h2>
-    <p>Cupos limitados. <strong>La masterclass es en vivo.</strong> Recibirás el link por WhatsApp.</p>
-
-    <div class="input-group">
-      <input type="text" id="nombre" placeholder="Tu nombre completo" />
-      <input type="email" id="email" placeholder="Tu correo electrónico" />
-      <select id="area">
-        <option value="" disabled selected>¿De qué área eres?</option>
-        <option value="rrhh">Recursos Humanos</option>
-        <option value="contabilidad">Contabilidad / Finanzas</option>
-        <option value="ventas">Ventas / Comercial</option>
-        <option value="marketing">Marketing</option>
-        <option value="logistica">Logística / Operaciones</option>
-        <option value="otro">Otra área</option>
-      </select>
+  <!-- HERO -->
+  <div class="ll-hero">
+    <div class="ll-badge">
+      <div class="ll-badge-dot"></div>
+      Masterclass 100% gratuita
     </div>
 
-    <button class="cta-btn" onclick="handleSubmit()">
-      ✅ Quiero mi lugar gratis →
-    </button>
+    <h1 class="ll-h1">
+      <span class="ll-orange">Automatiza</span>
+      <span class="ll-white">tus reportes.</span>
+      <span class="ll-white">Para siempre.</span>
+    </h1>
 
-    <p class="form-disclaimer">Sin spam. Solo el link de la masterclass y nada más.</p>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- ¿TE IDENTIFICAS? -->
-<section>
-  <div class="section-label">El problema</div>
-  <div class="section-title">¿Esto te suena familiar?</div>
-  <p class="section-body">Si trabajas en RRHH, contabilidad, ventas o logística y usas Excel para tus reportes, probablemente vives esto cada semana:</p>
-
-  <ul class="pain-list" id="painList">
-    <li><span class="x">✗</span> Copias y pegas datos entre archivos durante horas</li>
-    <li><span class="x">✗</span> Te quedas hasta tarde — o los fines de semana — actualizando reportes</li>
-    <li><span class="x">✗</span> Tienes 10 archivos distintos que consolidar cada mes a mano</li>
-    <li><span class="x">✗</span> Tu jefe pide el reporte y tú tardas 3 horas en dárselo</li>
-    <li><span class="x">✗</span> Sientes que haces el trabajo de una máquina, pero eres tú quien lo hace</li>
-  </ul>
-</section>
-
-<div class="divider"></div>
-
-<!-- QUIÉN ES LUIS -->
-<section>
-  <div class="section-label">Tu instructor</div>
-  <div class="section-title">Quién es Luis León</div>
-
-  <div class="bio-card">
-    <div class="bio-top">
-      <div class="avatar">LL</div>
-      <div>
-        <div class="bio-name">Luis León</div>
-        <div class="bio-title">Analista Senior · Especialista en Automatización</div>
-      </div>
-    </div>
-
-    <div class="companies">
-      <div class="company-badge">🛢 Repsol</div>
-      <div class="company-badge">☕ Nestlé</div>
-      <div class="company-badge">🔵 Solgas</div>
-    </div>
-
-    <p class="bio-text">
-      Durante 10 años trabajé como analista senior en empresas líderes de Latinoamérica. Viví en carne propia las noches hasta tarde, los fines de semana perdidos y la presión de tener reportes listos para ayer.
-      <br><br>
-      Cuando descubrí Power Query, mi vida cambió. Reportes que me tomaban 4 horas pasaron a actualizarse solos en segundos. Hoy enseño exactamente ese sistema — sin teoría de manual, sino lo que realmente se usa en las grandes empresas.
+    <p class="ll-hero-sub">
+      Aprende a actualizar cualquier reporte con <strong>1 solo clic</strong> usando Power Query — aunque nunca lo hayas usado antes.
     </p>
-  </div>
-</section>
 
-<div class="divider"></div>
+    <div class="ll-proof-strip">
+      <div class="ll-proof-chip">🏢 Ex-analista en Repsol</div>
+      <div class="ll-proof-chip">🏢 Nestlé</div>
+      <div class="ll-proof-chip">🏢 Solgas</div>
+      <div class="ll-proof-chip">📅 10 años de experiencia</div>
+    </div>
 
-<!-- QUÉ APRENDERÁS -->
-<section>
-  <div class="section-label">La masterclass</div>
-  <div class="section-title">Qué aprenderás en 75 minutos</div>
-
-  <div class="learn-grid" id="learnGrid">
-    <div class="learn-item">
-      <div class="learn-num">01</div>
-      <div>
-        <h3>Por qué tus reportes te roban tiempo</h3>
-        <p>Los 3 errores que comete el 90% de analistas — y que se pueden eliminar sin ser experto en Excel.</p>
+    <!-- FORM -->
+    <div class="ll-form-block">
+      <h2>Reserva tu lugar gratis</h2>
+      <p class="ll-form-desc">Cupos limitados. <strong>La masterclass es en vivo.</strong> Recibirás el link por WhatsApp.</p>
+      <div class="ll-input-group">
+        <input type="text" id="ll-nombre" placeholder="Tu nombre completo" />
+        <input type="email" id="ll-email" placeholder="Tu correo electrónico" />
+        <select id="ll-area">
+          <option value="" disabled selected>¿De qué área eres?</option>
+          <option value="RRHH">Recursos Humanos</option>
+          <option value="Contabilidad">Contabilidad / Finanzas</option>
+          <option value="Ventas">Ventas / Comercial</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Logística">Logística / Operaciones</option>
+          <option value="Otra">Otra área</option>
+        </select>
       </div>
-    </div>
-    <div class="learn-item">
-      <div class="learn-num">02</div>
-      <div>
-        <h3>Conecta y limpia tus datos en minutos</h3>
-        <p>Aprenderás en vivo, con un archivo real, cómo limpiar y unir tablas de distintas áreas automáticamente.</p>
-      </div>
-    </div>
-    <div class="learn-item">
-      <div class="learn-num">03</div>
-      <div>
-        <h3>El momento WOW: 1 clic y listo</h3>
-        <p>Presionas Actualizar y todos los datos nuevos aparecen solos. Lo harás tú mismo durante la clase.</p>
-      </div>
-    </div>
-    <div class="learn-item">
-      <div class="learn-num">04</div>
-      <div>
-        <h3>El roadmap completo para tu área</h3>
-        <p>Sabrás exactamente cómo aplicar esto a tus reportes reales de RRHH, contabilidad, ventas o logística.</p>
-      </div>
+      <button class="ll-cta-btn" onclick="llSubmit()">✅ Quiero mi lugar gratis →</button>
+      <p class="ll-form-note">Sin spam. Solo el link de la masterclass y nada más.</p>
     </div>
   </div>
-</section>
 
-<!-- DETALLES -->
-<section style="padding-top: 0;">
-  <div class="section-label">Detalles del evento</div>
-  <div class="section-title">La masterclass</div>
-  <div class="details-strip">
-    <div class="detail-card">
-      <div class="icon">🎥</div>
-      <div class="label">Formato</div>
-      <div class="value">En vivo por Zoom</div>
-    </div>
-    <div class="detail-card">
-      <div class="icon">⏱</div>
-      <div class="label">Duración</div>
-      <div class="value">75 minutos</div>
-    </div>
-    <div class="detail-card">
-      <div class="icon">💰</div>
-      <div class="label">Costo</div>
-      <div class="value">Completamente gratis</div>
-    </div>
-    <div class="detail-card">
-      <div class="icon">🎁</div>
-      <div class="label">Incluye</div>
-      <div class="value">Archivo de práctica</div>
+  <div class="ll-divider"></div>
+
+  <!-- DOLOR -->
+  <div class="ll-section">
+    <div class="ll-label">El problema</div>
+    <div class="ll-stitle">¿Esto te suena familiar?</div>
+    <p class="ll-sbody">Si trabajas en RRHH, contabilidad, ventas o logística y usas Excel para tus reportes, probablemente vives esto cada semana:</p>
+    <ul class="ll-pain-list">
+      <li><div class="ll-x">✗</div> Copias y pegas datos entre archivos durante horas</li>
+      <li><div class="ll-x">✗</div> Te quedas hasta tarde — o los fines de semana — actualizando reportes</li>
+      <li><div class="ll-x">✗</div> Tienes 10 archivos distintos que consolidar cada mes a mano</li>
+      <li><div class="ll-x">✗</div> Tu jefe pide el reporte y tú tardas 3 horas en dárselo</li>
+      <li><div class="ll-x">✗</div> Sientes que haces el trabajo de una máquina, pero eres tú quien lo hace</li>
+    </ul>
+  </div>
+
+  <div class="ll-divider"></div>
+
+  <!-- BIO -->
+  <div class="ll-section">
+    <div class="ll-label">Tu instructor</div>
+    <div class="ll-stitle">Quién es Luis León</div>
+    <div class="ll-bio-card">
+      <div class="ll-bio-top">
+        <div class="ll-avatar">LL</div>
+        <div>
+          <div class="ll-bio-name">Luis León</div>
+          <div class="ll-bio-role">Analista Senior · Especialista en Automatización</div>
+        </div>
+      </div>
+      <div class="ll-companies">
+        <div class="ll-co-badge">🛢 Repsol</div>
+        <div class="ll-co-badge">☕ Nestlé</div>
+        <div class="ll-co-badge">🔵 Solgas</div>
+      </div>
+      <p class="ll-bio-text">
+        Durante 10 años trabajé como analista senior en empresas líderes de Latinoamérica. Viví en carne propia las noches hasta tarde, los fines de semana perdidos y la presión de tener reportes listos para ayer.
+        <br><br>
+        Cuando descubrí Power Query, todo cambió. Reportes que me tomaban 4 horas pasaron a actualizarse solos en segundos. Hoy enseño exactamente ese sistema — sin teoría de manual, sino lo que realmente se usa en las grandes empresas.
+      </p>
     </div>
   </div>
-</section>
 
-<div class="divider"></div>
+  <div class="ll-divider"></div>
 
-<!-- FINAL CTA -->
-<div class="final-cta">
-  <div class="section-label">¿Listo para el cambio?</div>
-  <div class="section-title">Reserva tu lugar ahora</div>
-  <p class="section-body">Los cupos son limitados. La clase es en vivo y no se repetirá en esta fecha. Inscríbete y recibe el link de Zoom por WhatsApp.</p>
+  <!-- QUÉ APRENDERÁS -->
+  <div class="ll-section">
+    <div class="ll-label">La masterclass</div>
+    <div class="ll-stitle">Qué aprenderás en 75 minutos</div>
+    <div class="ll-learn-grid">
+      <div class="ll-learn-item">
+        <div class="ll-learn-num">01</div>
+        <div>
+          <h3>Por qué tus reportes te roban tiempo</h3>
+          <p>Los 3 errores que comete el 90% de analistas — y que se eliminan sin ser experto en Excel.</p>
+        </div>
+      </div>
+      <div class="ll-learn-item">
+        <div class="ll-learn-num">02</div>
+        <div>
+          <h3>Conecta y limpia tus datos en minutos</h3>
+          <p>Aprenderás en vivo cómo limpiar y unir tablas de distintas áreas automáticamente con un archivo real.</p>
+        </div>
+      </div>
+      <div class="ll-learn-item">
+        <div class="ll-learn-num">03</div>
+        <div>
+          <h3>El momento WOW: 1 clic y listo</h3>
+          <p>Presionas Actualizar y todos los datos nuevos aparecen solos. Lo harás tú mismo durante la clase.</p>
+        </div>
+      </div>
+      <div class="ll-learn-item">
+        <div class="ll-learn-num">04</div>
+        <div>
+          <h3>El roadmap para tu área específica</h3>
+          <p>Sabrás cómo aplicar esto a tus reportes reales de RRHH, contabilidad, ventas o logística.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <button class="cta-btn" onclick="scrollToForm()">
-    → Quiero mi lugar gratis
-  </button>
+  <!-- DETALLES -->
+  <div class="ll-section" style="padding-top:0">
+    <div class="ll-label">Detalles del evento</div>
+    <div class="ll-stitle">La masterclass</div>
+    <div class="ll-details-grid">
+      <div class="ll-detail-card"><div class="ll-dicon">🎥</div><div class="ll-dlabel">Formato</div><div class="ll-dvalue">En vivo por Zoom</div></div>
+      <div class="ll-detail-card"><div class="ll-dicon">⏱</div><div class="ll-dlabel">Duración</div><div class="ll-dvalue">75 minutos</div></div>
+      <div class="ll-detail-card"><div class="ll-dicon">💰</div><div class="ll-dlabel">Costo</div><div class="ll-dvalue">Gratis</div></div>
+      <div class="ll-detail-card"><div class="ll-dicon">🎁</div><div class="ll-dlabel">Incluye</div><div class="ll-dvalue">Archivo de práctica</div></div>
+    </div>
+  </div>
+
+  <div class="ll-divider"></div>
+
+  <!-- FINAL CTA -->
+  <div class="ll-final-cta">
+    <div class="ll-label">¿Listo para el cambio?</div>
+    <div class="ll-stitle">Reserva tu lugar ahora</div>
+    <p class="ll-sbody" style="margin-bottom:32px">Los cupos son limitados. La clase es en vivo y no se repetirá en esta fecha. Inscríbete y recibe el link de Zoom por WhatsApp.</p>
+    <button class="ll-cta-btn" onclick="document.getElementById('ll-nombre').scrollIntoView({behavior:'smooth',block:'center'})">
+      → Quiero mi lugar gratis
+    </button>
+  </div>
+
+  <div class="ll-footer">© 2025 Luis León · Todos los derechos reservados</div>
+
 </div>
-
-<!-- FOOTER -->
-<footer>
-  © 2025 Luis León · Todos los derechos reservados
-</footer>
 
 <script>
-  // Animate pain list on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const items = entry.target.querySelectorAll('li, .learn-item');
-        items.forEach((item, i) => {
-          setTimeout(() => item.classList.add('visible'), i * 120);
-        });
-      }
-    });
-  }, { threshold: 0.1 });
+(function(){
+  var c = 47;
+  setInterval(function(){
+    if(Math.random()>0.7){ c += 1; document.getElementById('ll-counter').textContent = c; }
+  }, 9000);
 
-  document.querySelectorAll('#painList, #learnGrid').forEach(el => observer.observe(el));
-
-  // Animate counter
-  let count = 47;
-  setInterval(() => {
-    if (Math.random() > 0.7) {
-      count += Math.floor(Math.random() * 2) + 1;
-      document.getElementById('counter').textContent = count;
-    }
-  }, 8000);
-
-  // Scroll to form
-  function scrollToForm() {
-    document.getElementById('nombre').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(() => document.getElementById('nombre').focus(), 600);
-  }
-
-  // Submit handler
-  function handleSubmit() {
-    const nombre = document.getElementById('nombre').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const area = document.getElementById('area').value;
-
-    if (!nombre || !email || !area) {
-      alert('Por favor completa todos los campos para reservar tu lugar.');
-      return;
-    }
-
-    // Redirect to WhatsApp with pre-filled message
-    const msg = encodeURIComponent(
-      `¡Hola Luis! Me inscribo a la Masterclass Gratuita 🙋\n\n` +
-      `👤 Nombre: ${nombre}\n` +
-      `📧 Email: ${email}\n` +
-      `🏢 Área: ${area}\n\n` +
-      `¡Quiero automatizar mis reportes!`
+  window.llSubmit = function(){
+    var n = document.getElementById('ll-nombre').value.trim();
+    var e = document.getElementById('ll-email').value.trim();
+    var a = document.getElementById('ll-area').value;
+    if(!n||!e||!a){ alert('Por favor completa todos los campos para reservar tu lugar.'); return; }
+    var msg = encodeURIComponent(
+      '¡Hola Luis! Me inscribo a la Masterclass Gratuita 🙋\n\n' +
+      '👤 Nombre: ' + n + '\n' +
+      '📧 Email: ' + e + '\n' +
+      '🏢 Área: ' + a + '\n\n' +
+      '¡Quiero automatizar mis reportes!'
     );
-    window.open(`https://wa.me/51980783674?text=${msg}`, '_blank');
-  }
+    window.open('https://wa.me/51980783674?text=' + msg, '_blank');
+  };
+})();
 </script>
-</body>
-</html>
