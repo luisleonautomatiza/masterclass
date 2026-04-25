@@ -746,7 +746,22 @@
       `🏢 Área: ${area}\n\n` +
       `¡Quiero automatizar mis reportes!`
     );
-    window.open(`https://wa.me/51980783674?text=${msg}`, '_blank');
+    const waURL = `https://api.whatsapp.com/send?phone=51980783674&text=${msg}`;
+    const waApp = `whatsapp://send?phone=51980783674&text=${msg}`;
+    const isAndroid = /android/i.test(navigator.userAgent);
+
+    if (isAndroid) {
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = waApp;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+        window.location.href = waURL;
+      }, 1500);
+    } else {
+      window.open(waURL, '_blank');
+    }
   }
 </script>
 </body>
